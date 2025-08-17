@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:server": "nodemon --exec ts-node server/src/server.ts",
+    "dev:client": "cd client && python3 -m http.server 8000",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build:server": "tsc -p server/tsconfig.json",
+    "build:client": "echo 'Client build - copying files'",
+    "build": "npm run build:server && npm run build:client",
+    "start": "node server/dist/server.js",
+    "deploy": "pm2 start ecosystem.config.js"
   },
   "keywords": [],
   "author": "",
