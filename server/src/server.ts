@@ -1,4 +1,3 @@
-// server/src/server.ts
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -9,10 +8,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 import { DatabaseService } from './services/DatabaseService';
-import { GameService } from './services/GameService';
+import { GameManager } from './services/GameManager';
 import { AuthService } from './services/AuthService';
-import { AuthController } from './controllers/AuthController';
-import { GameController } from './controllers/GameController';
+import { SocketHandler } from './controllers/SocketHandler';
 import { createAuthRoutes } from './routes/authRoutes';
 
 dotenv.config();
@@ -33,79 +31,25 @@ app.use(helmet({
   contentSecurityPolicy: false // Allow inline scripts for development
 }));
 app.use(compression());
-app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:8000",
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../client')));
 
 // Initialize services
 const dbService = new DatabaseService();
 const authService = new AuthService(dbService);
-const gameService = new GameService(dbService);
-
-// Initialize controllers
-const authController = new AuthController(authService);
-const gameController = new GameController(gameService, authService);
+const gameManager = new GameManager(dbService);
+const socketHandler = new SocketHandler(io, authService, gameManager);
 
 // Routes
-app.use('/auth', createAuthRoutes(authController));
+app.use('/auth', createAuthRoutes(dbService));
 
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    timestamp: new Date().toISOString(),
-    version: '1.0.0'
-  });
+  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../client/index.html'));
-});
-
-// Socket.io event handling
-io.on('connection', (socket) => {
-  console.log(`Client connected: ${socket.id}`);
-
-  // Authentication
-  socket.on('authenticate', (data) => {
-    gameController.handleAuthentication(socket, data);
-  });
-
-  // Game management
-  socket.on('createGame', (settings) => {
-    gameController.handleCreateGame(socket, settings);
-  });
-
-  socket.on('joinGame', (data) => {
-    gameController.handleJoinGame(socket, data);
-  });
-
-  socket.on('quickPlay', () => {
-    gameController.handleQuickPlay(socket);
-  });
-
-  // Game actions
-  socket.on('move', (data) => {
-    gameController.handleMove(socket, data);
-  });
-
-  socket.on('updateFacing', (data) => {
-    gameController.handleUpdateFacing(socket, data);
-  });
-
-  socket.on('useAbility', (data) => {
-    gameController.handleUseAbility(socket, data);
-  });
-
-  socket.on('leaveGame', () => {
-    gameController.handleLeaveGame(socket);
-  });
-
-  socket.on('disconnect', () => {
-    gameController.handleDisconnect(socket);
-  });
 });
 
 // Initialize database connection
@@ -120,6 +64,9 @@ async function startServer() {
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
     
+    // Initialize socket handlers
+    socketHandler.initialize();
+    
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
@@ -129,15 +76,6 @@ async function startServer() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
-  await dbService.close();
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
-});
-
-process.on('SIGINT', async () => {
-  console.log('SIGINT received, shutting down gracefully');
   await dbService.close();
   server.close(() => {
     console.log('Server closed');
