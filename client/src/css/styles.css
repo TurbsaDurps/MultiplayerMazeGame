@@ -1,0 +1,307 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    overflow: hidden;
+}
+
+/* Screen Management */
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 20px;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Game Container */
+#gameContainer {
+    display: flex;
+    height: 100vh;
+}
+
+#gameCanvas {
+    background: #000;
+    border: 2px solid #333;
+    cursor: none;
+}
+
+#sidebar {
+    width: 300px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form Elements */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+}
+
+input, button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+input {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+button {
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.secondary-btn {
+    background: #2196F3;
+}
+
+.secondary-btn:hover {
+    background: #1976D2;
+}
+
+.logout-btn {
+    background: #f44336;
+    margin-top: 20px;
+}
+
+.logout-btn:hover {
+    background: #d32f2f;
+}
+
+/* Player Info */
+#playerInfo {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Player List */
+#playerList {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-item:last-child {
+    border-bottom: none;
+}
+
+/* Abilities */
+#abilities {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ability-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ability-card:hover {
+    border-color: #4CAF50;
+}
+
+.ability-card.on-cooldown {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #f44336;
+}
+
+.ability-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.ability-description {
+    font-size: 12px;
+    opacity: 0.8;
+    line-height: 1.3;
+}
+
+.cooldown-timer {
+    font-size: 10px;
+    color: #ff6b6b;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+/* Game Stats */
+#gameStats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Messages */
+#messages {
+    max-height: 150px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.message {
+    margin-bottom: 5px;
+    opacity: 0.9;
+    line-height: 1.2;
+}
+
+.message.system {
+    color: #ffd700;
+}
+
+.message.elimination {
+    color: #ff6b6b;
+}
+
+.message.ability {
+    color: #4CAF50;
+}
+
+/* Status Messages */
+.error-message {
+    color: #ff6b6b;
+    text-align: center;
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.success-message {
+    color: #4CAF50;
+    text-align: center;
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* Game Screen Specific Styles */
+#gameScreen.active {
+    display: block;
+}
+
+#gameInfo h3 {
+    color: #ffd700;
+    margin-bottom: 10px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    #gameCanvas {
+        width: 600px;
+        height: 450px;
+    }
+    
+    #sidebar {
+        width: 250px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 900px) {
+    #gameContainer {
+        flex-direction: column;
+    }
+    
+    #gameCanvas {
+        width: 100vw;
+        height: 60vh;
+    }
+    
+    #sidebar {
+        width: 100vw;
+        height: 40vh;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 15px;
+    }
+    
+    #sidebar > div {
+        min-width: 200px;
+    }
+}

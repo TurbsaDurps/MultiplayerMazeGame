@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer Maze Game</title>
+    <link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <h1>Multiplayer Maze Game</h1>
+        <div class="input-group">
+            <input type="text" id="loginUsername" placeholder="Username" />
+            <input type="email" id="loginEmail" placeholder="Email" />
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <button id="loginBtn">Login</button>
+            <button id="registerBtn" class="secondary-btn">Register</button>
+        </div>
+        <div id="loginMessage"></div>
+    </div>
+
+    <!-- Main Menu Screen -->
+    <div id="mainMenu" class="screen">
+        <h2>Welcome, <span id="playerName"></span>!</h2>
+        <div id="playerInfo">
+            <div>Coins: <span id="coinCount">0</span></div>
+        </div>
+        <div class="input-group">
+            <button id="createGameBtn">Create Game</button>
+            <button id="quickPlayBtn" class="secondary-btn">Quick Play</button>
+            <input type="text" id="roomCodeInput" placeholder="Enter room code..." />
+            <button id="joinGameBtn" class="secondary-btn">Join Game</button>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+        <div id="menuMessage"></div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <div id="gameContainer">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div id="sidebar">
+                <div id="gameInfo">
+                    <h3>Room: <span id="roomCode"></span></h3>
+                    <div id="gameStats">
+                        <div class="stat-item">
+                            <span>Lives:</span>
+                            <span id="livesCount">3</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Eliminations:</span>
+                            <span id="eliminationCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Checkpoints:</span>
+                            <span id="checkpointCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="playerList">
+                    <h4>Players</h4>
+                    <div id="players"></div>
+                </div>
+
+                <div id="abilities">
+                    <h4>Abilities</h4>
+                    <div id="abilityCards"></div>
+                </div>
+
+                <div id="messages">
+                    <div class="message system">Game started! Find the exit!</div>
+                </div>
+
+                <button id="leaveGameBtn" class="logout-btn">Leave Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="src/ts/GameTypes.js"></script>
+    <script src="src/ts/GameRenderer.js"></script>
+    <script src="src/ts/GameClient.js"></script>
+    <script>
+        // Initialize the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameClient = new GameClient();
+            gameClient.startGameLoop();
+
+            // Disable right-click context menu on canvas
+            document.addEventListener('contextmenu', (e) => {
+                if (e.target.tagName === 'CANVAS') {
+                    e.preventDefault();
+                }
+            });
+
+            // Check for existing auth token on load
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // TODO: Verify token with server and auto-login
+            }
+        });
+    </script>
+</body>
+</html>
