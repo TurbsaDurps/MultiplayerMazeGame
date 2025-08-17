@@ -21,10 +21,6 @@ export class GameRoom {
     this.mazeWidth = parseInt(process.env.MAZE_WIDTH || '31');
     this.mazeHeight = parseInt(process.env.MAZE_HEIGHT || '31');
     
-    this.generateMaze();
-  }
-
-  private generateMaze(): void {
     const generator = new MazeGenerator(this.mazeWidth, this.mazeHeight);
     this.maze = generator.generate();
     
@@ -41,7 +37,8 @@ export class GameRoom {
     this.checkpoints = [];
 
     for (let i = 0; i < numCheckpoints; i++) {
-      let x, y;
+      let x = 0;
+      let y = 0;
       do {
         x = Math.floor(Math.random() * (this.mazeWidth - 2)) + 1;
         y = Math.floor(Math.random() * (this.mazeHeight - 2)) + 1;
